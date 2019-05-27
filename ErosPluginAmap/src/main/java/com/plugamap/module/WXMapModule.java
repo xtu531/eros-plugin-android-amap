@@ -1,5 +1,6 @@
 package com.plugamap.module;
 
+import android.Manifest;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
@@ -17,7 +18,9 @@ import com.amap.api.maps.model.LatLng;
 import com.eros.framework.BMWXEnvironment;
 import com.eros.framework.constant.Constant;
 import com.eros.framework.manager.ManagerFactory;
+import com.eros.framework.manager.impl.PermissionManager;
 import com.eros.framework.model.PlatformConfigBean;
+import com.eros.framework.utils.PermissionUtils;
 import com.plugamap.component.WXMapPolygonComponent;
 import com.plugamap.component.WXMapViewComponent;
 import com.plugamap.manager.GeoManager;
@@ -34,6 +37,7 @@ import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by budao on 2017/1/24.
@@ -43,7 +47,11 @@ import java.util.HashMap;
 public class WXMapModule extends WXModule {
     private static final String RESULT = "result";
     private static final String DATA = "data";
-
+    private static final String PROVINCE = "province";
+    private static final String CITY = "city";
+    private static final String DISTRICT = "district";
+    private static final String STREET = "street";
+    private static final String CITYCODE = "citycode";
     private static final String RESULT_OK = "success";
     private static final String RESULT_FAILED = "failed";
 
@@ -104,7 +112,35 @@ public class WXMapModule extends WXModule {
      * get user location.
      */
     @JSMethod
-    public void getUserLocation(String id, @Nullable final JSCallback callback) {
+    public void getUserLocation(final String id, @Nullable final JSCallback callback) {
+        if (!PermissionUtils.checkPermission(mWXSDKInstance.getContext(), Manifest.permission.ACCESS_COARSE_LOCATION, new PermissionManager.PermissionListener() {
+            @Override
+            public void onPermissionsGranted(List<String> perms) {
+                locationProcess(id, callback);
+            }
+
+            @Override
+            public void onPermissionsDenied(List<String> perms) {
+                callback.invoke(null);
+            }
+
+            @Override
+            public void onPermissionRequestRejected() {
+
+            }
+        })) {
+            return;
+        }
+        locationProcess(id, callback);
+    }
+
+    @JSMethod
+    public void initAmap(final String amapKey) {
+        GeoManager mGeoManager = ManagerFactory.getManagerService(GeoManager.class);
+        mGeoManager.initAmap(amapKey);
+    }
+
+    private void locationProcess(String id, @Nullable final JSCallback callback){
         final AMapLocationClient client = new AMapLocationClient(
                 WXEnvironment.getApplication().getApplicationContext());
         final AMapLocationClientOption clientOption = new AMapLocationClientOption();
@@ -114,11 +150,16 @@ public class WXMapModule extends WXModule {
                 if (aMapLocation != null && aMapLocation.getErrorCode() == 0) {
                     if (callback != null) {
                         HashMap map = new HashMap(2);
-                        HashMap data = new HashMap(1);
+                        HashMap data = new HashMap(5);
                         ArrayList position = new ArrayList();
                         position.add(aMapLocation.getLongitude());
                         position.add(aMapLocation.getLatitude());
                         data.put("position", position);
+                        data.put(PROVINCE,aMapLocation.getProvince());
+                        data.put(CITY,aMapLocation.getCity());
+                        data.put(DISTRICT,aMapLocation.getDistrict());
+                        data.put(STREET,aMapLocation.getStreet());
+                        data.put(CITYCODE,aMapLocation.getAdCode());
                         map.put(DATA, data);
                         map.put(RESULT, aMapLocation.getLongitude() > 0 && aMapLocation.getLatitude() > 0 ? RESULT_OK : RESULT_FAILED);
                         callback.invoke(map);
@@ -144,11 +185,4 @@ public class WXMapModule extends WXModule {
         // 在单次定位情况下，定位无论成功与否，都无需调用stopLocation()方法移除请求，定位sdk内部会移除
         client.startLocation();
     }
-
-    @JSMethod
-    public void initAmap(final String amapKey) {
-        GeoManager mGeoManager = ManagerFactory.getManagerService(GeoManager.class);
-        mGeoManager.initAmap(amapKey);
-    }
-
 }
