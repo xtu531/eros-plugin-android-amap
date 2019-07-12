@@ -44,7 +44,7 @@
         >
 
 
-        <activity android:name="com.benmu.wx.activity.MainActivity">
+        <activity android:name="com.eros.wx.activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
 
@@ -64,7 +64,7 @@
 
         <!--图片预览Activity-->
         <activity
-            android:name="com.benmu.framework.activity.BrowseImgActivity"
+            android:name="com.eros.framework.activity.BrowseImgActivity"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Light.NoTitleBar"/>
 
@@ -78,7 +78,7 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name="com.benmu.framework.activity.GlobalWebViewActivity">
+        <activity android:name="com.eros.framework.activity.GlobalWebViewActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
 
@@ -87,7 +87,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.benmu.framework.activity.DebugActivity">
+        <activity android:name="com.eros.framework.activity.DebugActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
 
@@ -98,24 +98,24 @@
 
 
         <!--wxApi-->
-        <activity
-            android:name=".wxapi.WXEntryActivity"
-            android:exported="true"
-            android:launchMode="singleTop"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
+        <!--<activity-->
+            <!--android:name=".wxapi.WXEntryActivity"-->
+            <!--android:exported="true"-->
+            <!--android:launchMode="singleTop"-->
+            <!--android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen">-->
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.VIEW"/>-->
 
-                <category android:name="android.intent.category.DEFAULT"/>
+                <!--<category android:name="android.intent.category.DEFAULT"/>-->
 
-                <data android:scheme="your wx appId"/>
-            </intent-filter>
-        </activity>
+                <!--<data android:scheme="your wx appId"/>-->
+            <!--</intent-filter>-->
+        <!--</activity>-->
 
-        <activity
-            android:name=".wxapi.WXPayEntryActivity"
-            android:exported="true"
-            android:launchMode="singleTop"/>
+        <!--<activity-->
+            <!--android:name=".wxapi.WXPayEntryActivity"-->
+            <!--android:exported="true"-->
+            <!--android:launchMode="singleTop"/>-->
 
         <!--amap-->
 

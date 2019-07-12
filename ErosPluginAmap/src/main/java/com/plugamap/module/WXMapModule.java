@@ -112,7 +112,7 @@ public class WXMapModule extends WXModule {
      * get user location.
      */
     @JSMethod
-    public void getUserLocation(final String id, @Nullable final JSCallback callback) {
+    public void getLocation(final String id, @Nullable final JSCallback callback) {
         if (!PermissionUtils.checkPermission(mWXSDKInstance.getContext(), Manifest.permission.ACCESS_COARSE_LOCATION, new PermissionManager.PermissionListener() {
             @Override
             public void onPermissionsGranted(List<String> perms) {
